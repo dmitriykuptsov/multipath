@@ -9,8 +9,8 @@ class Analyzer():
         output = []
         ts = []
         for idx1 in range(0, len(self.packets)):
-            for idx2 in range(0, len(self.packets)):
-                if self.packets[idx1].arrivalTimestamp < self.packets[idx2].arrivalTimestamp:
+            for idx2 in range(idx1, len(self.packets)):
+                if self.packets[idx1].arrivalTimestamp > self.packets[idx2].arrivalTimestamp:
                     tmp = self.packets[idx1]
                     self.packets[idx1] = self.packets[idx2]
                     self.packets[idx2] = tmp
