@@ -1,12 +1,12 @@
-2 100 2000
+2 20 10000
 exponential wrr 0.3 0.3
-3 100 2000
+3 20 10000
 exponential wrr 0.3 0.3
-4 100 2000
+4 20 10000
 exponential wrr 0.3 0.3
-2 100 2000
+2 20 10000
 exponential bn 0.3 0.3
-3 100 2000
+3 20 10000
 exponential bn 0.3 0.3
-4 100 2000
+4 20 10000
 exponential bn 0.3 0.3

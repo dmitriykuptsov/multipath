@@ -17,9 +17,7 @@ simulationParameters = ParamsParser(args.file)
 for idx in range(0, simulationParameters.getNumberOfSimulations()):
     params = simulationParameters.getSimulationParams(idx)
     reorderDistance = []
-    print("Doing simulation for the following setting: type %s rounds %s max packets %s paths %s" % (params.getSchedulerType(), params.getNumRounds(), params.getNumPackets(), params.getNumPaths()))
     for roundIndex in range(0, params.getNumRounds()):
-        #print("Doing round %s for %s packets" % (roundIndex, params.getNumPackets()))
         scheduler = SchedulerFactory.getInstance(params);
         packets = [];
         s = time()
