@@ -6,6 +6,9 @@ from scheduler import SchedulerFactory
 import numpy as np
 from time import time
 
+# Set the seed so that the parameters are the same for both BN and WRR simulators
+np.random.seed(1)
+
 parser = argparse.ArgumentParser(description='Multipath simulator')
 parser.add_argument('--file',  help='Simulation parameters')
 args = parser.parse_args()
