@@ -93,12 +93,6 @@ class ParamsParser():
         with open(file) as fd:
             lines = fd.readlines();
             c = 0
-            numPaths = 2
-            numRounds = 1000
-            numPackets = 1000
-            distribution = "exponential"
-            schedulerType = "wrr"
-            args = []
             for line in lines:
                 if c % 2 == 0:
                     p = line.split(" ")
@@ -109,11 +103,12 @@ class ParamsParser():
                     p = line.split(" ")
                     distribution = p[0]
                     schedulerType = p[1]
+                    args = []
                     for i in range(2, len(p)):
                         args.append(float(p[i]))
-                c += 1
                 if c % 2 == 1:
                     self.simulations.append(SimulationParams(numRounds, numPackets, numPaths, schedulerType, distribution, args))
+                c += 1
     def getNumberOfSimulations(self):
         return len(self.simulations)
     def getSimulationParams(self, index):
