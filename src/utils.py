@@ -1,5 +1,6 @@
 from delays import GenericDelay
 from delays import DelayFactory
+from numpy.random import uniform
 
 class Analyzer():
     def __init__(self, packets):
@@ -36,8 +37,8 @@ class Analyzer():
 
 class Path():
     def __init__(self, index, distribution, args):
-        self.index = index;
-        self.distribution = distribution;
+        self.index = index
+        self.distribution = distribution
         self.delay = DelayFactory.get(distribution, args)
         self.lastTimestamp = 0
     def pathIndex(self):
@@ -60,13 +61,14 @@ class Packet():
         self.pathIndex = pathIndex
     
 class SimulationParams():
-    def __init__(self, numRounds = 1000, numPackets = 1000, numPaths = 2, scheduler = "wrr", distribution = "exponential", distributionParams = [0.3, 0.3]):
+    def __init__(self, numRounds = 1000, numPackets = 1000, numPaths = 2, scheduler = "wrr", distribution = "exponential", twoPaths = True, distributionParams = [0.3, 0.3]):
         self.numRounds = numRounds
         self.numPackets = numPackets
         self.numPaths = numPaths
         self.distribution = distribution
         self.distributionParams = distributionParams
         self.scheduler = scheduler
+        self.twoPaths = twoPaths
         self.paths = [];
     def getNumPackets(self):
         return self.numPackets
@@ -82,7 +84,15 @@ class SimulationParams():
         if len(self.paths) > 0:
             return self.paths
         for i in range(0, self.numPaths):
-            self.paths.append(Path(i, self.distribution, self.distributionParams))
+            if self.twoPaths:
+                if i % 2 == 0:
+                    self.paths.append(Path(i, self.distribution, self.distributionParams[:int(len(self.distributionParams)/2)]))
+                    #print("Scheduler %s Distribution %s Params %s" % (self.scheduler, self.distribution, self.distributionParams[:int(len(self.distributionParams)/2)]))
+                else:
+                    self.paths.append(Path(i, self.distribution, self.distributionParams[int(len(self.distributionParams)/2):]))
+                    #print("Scheduler %s Distribution %s Params %s" % (self.scheduler, self.distribution, self.distributionParams[int(len(self.distributionParams)/2):]))
+            else:
+                self.paths.append(Path(i, self.distribution, self.distributionParams))
         return self.paths
 
 class ParamsParser():
@@ -103,11 +113,14 @@ class ParamsParser():
                     p = line.split(" ")
                     distribution = p[0]
                     schedulerType = p[1]
+                    twoPaths = False
                     args = []
-                    for i in range(2, len(p)):
+                    if p[len(p) - 1].strip() == "2paths":
+                        twoPaths = True
+                    for i in range(2, len(p) - 1):
                         args.append(float(p[i]))
                 if c % 2 == 1:
-                    self.simulations.append(SimulationParams(numRounds, numPackets, numPaths, schedulerType, distribution, args))
+                    self.simulations.append(SimulationParams(numRounds, numPackets, numPaths, schedulerType, distribution, twoPaths, args))
                 c += 1
     def getNumberOfSimulations(self):
         return len(self.simulations)
