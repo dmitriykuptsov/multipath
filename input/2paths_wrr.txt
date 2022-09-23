@@ -1,0 +1,16 @@
+2 200 10000
+exponential wrr 1 2 0.01 0.02 2paths
+2 200 10000
+exponential wrr 1 2 0.03 0.05 2paths
+2 200 10000
+exponential wrr 1 2 0.1 0.2 2paths
+2 200 10000
+exponential wrr 1 2 0.3 0.5 2paths
+2 200 10000
+exponential wrr 1 2 1 2 2paths
+2 200 10000
+exponential wrr 1 2 2.5 3 2paths
+2 200 10000
+exponential wrr 1 2 3 3.5 2paths
+2 200 10000
+exponential wrr 1 2 3.5 4 2paths
