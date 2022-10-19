@@ -2,6 +2,7 @@ from numpy.random import exponential
 from numpy.random import uniform
 from numpy.random import pareto
 import numpy as np
+import math
 
 class GenericDelay():
 
@@ -48,7 +49,7 @@ class ParetoDelay(GenericDelay):
 
     def mean(self):
         if self.a <= 1:
-            return inf
+            return math.inf
         return self.a * self.m / (self.a - 1)
 
 class DelayFactory():
