@@ -32,6 +32,57 @@ class Analyzer():
             cumulative += maxrm
         return cumulative / len(self.sequence)
 
+    def computeAverageThroughput(self):
+        minTimestamp = self.packets[0].arrivalTimestamp
+        maxTimestamp = self.packets[len(self.packets) - 1].arrivalTimestamp
+        return 1500.0*len(self.packets) / (maxTimestamp - minTimestamp);
+    
+    def computeAvgNumberOfPacketsPerPath(self):
+        packets_per_path = {}
+        for i in range(0, len(self.sequence)):
+            if self.packets[self.sequence[i]].pathIndex not in packets_per_path.keys():
+                packets_per_path[self.packets[self.sequence[i]].pathIndex] = 1
+            else:
+                packets_per_path[self.packets[self.sequence[i]].pathIndex] += 1
+        result = []
+        for p in packets_per_path.keys():
+            #print("Here... "+ str(p))
+            result.append(packets_per_path[p])
+        avg = 0;
+        count = 0.0;
+        for p in result:
+            avg += p
+            count += 1.0;
+        avg = avg / count
+        #count = 0;
+        std = 0.0
+        for p in result:
+            #print(p)
+            std += (p-avg)*(p-avg)
+            #print((p-avg)*(p-avg))
+        #print(str(avg) + " " + str(std/(count - 1)) + " " + str(count))
+        return std / (count - 1)
+        # 1000 9000
+        # 2000 8000
+        # 3000 7000
+    
+    def computeStdNumberOfPacketsPerPath(self):
+        packets_per_path = {}
+        for i in range(0, len(self.sequence)):
+            if self.sequence[i].pathIndex not in packets_per_path.keys():
+                packets_per_path[self.packets[self.sequence[i]].pathIndex] = 1
+            else:
+                packets_per_path[self.packets[self.sequence[i]].pathIndex] += 1
+        result = []
+        for p in packets_per_path.keys():
+            result.append(packets_per_path[p])
+        var = 0;
+        count = 0.0;
+        for p in result:
+            var += (p-avg)*(p-avg)
+            count += 1.0;
+        return sqrt(var / (count - 1))
+
     def getSequence(self):
         return self.sequence
 
@@ -87,10 +138,10 @@ class SimulationParams():
             if self.twoPaths:
                 if i % 2 == 0:
                     self.paths.append(Path(i, self.distribution, self.distributionParams[:int(len(self.distributionParams)/2)]))
-                    #print("Scheduler %s Distribution %s Params %s" % (self.scheduler, self.distribution, self.distributionParams[:int(len(self.distributionParams)/2)]))
+                    print("Scheduler %s Distribution %s Params %s" % (self.scheduler, self.distribution, self.distributionParams[:int(len(self.distributionParams)/2)]))
                 else:
                     self.paths.append(Path(i, self.distribution, self.distributionParams[int(len(self.distributionParams)/2):]))
-                    #print("Scheduler %s Distribution %s Params %s" % (self.scheduler, self.distribution, self.distributionParams[int(len(self.distributionParams)/2):]))
+                    print("Scheduler %s Distribution %s Params %s" % (self.scheduler, self.distribution, self.distributionParams[int(len(self.distributionParams)/2):]))
             else:
                 self.paths.append(Path(i, self.distribution, self.distributionParams))
         return self.paths
@@ -117,8 +168,12 @@ class ParamsParser():
                     args = []
                     if p[len(p) - 1].strip() == "2paths":
                         twoPaths = True
-                    for i in range(2, len(p) - 1):
-                        args.append(float(p[i]))
+                    if twoPaths:
+                        for i in range(2, len(p) - 1):
+                            args.append(float(p[i]))
+                    else:
+                        for i in range(2, len(p)):
+                            args.append(float(p[i]))
                 if c % 2 == 1:
                     self.simulations.append(SimulationParams(numRounds, numPackets, numPaths, schedulerType, distribution, twoPaths, args))
                 c += 1

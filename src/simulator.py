@@ -20,6 +20,7 @@ simulationParameters = ParamsParser(args.file)
 for idx in range(0, simulationParameters.getNumberOfSimulations()):
     params = simulationParameters.getSimulationParams(idx)
     reorderDistance = []
+    avgTput = []
     for roundIndex in range(0, params.getNumRounds()):
         scheduler = SchedulerFactory.getInstance(params);
         packets = [];
@@ -28,12 +29,17 @@ for idx in range(0, simulationParameters.getNumberOfSimulations()):
             path = scheduler.getNextPath()
             delay = path.getDelay()
             packet = Packet(packetIndex, path.getLastTimestamp() + delay, path.pathIndex())
+            #print(packet.pathIndex)
             path.setLastTimestamp(path.getLastTimestamp() + delay)
             packets.append(packet)
         
         analyzer = Analyzer(packets)
         avgReorderingDistance = analyzer.computeReorderingDistance()
+        #avgPacketsPerPath = analyzer.computeAvgNumberOfPacketsPerPath()
         reorderDistance.append(avgReorderingDistance)
+        reorderDistance.append(0)
+        tput = analyzer.computeAverageThroughput()
+        avgTput.append(tput)
         e = time()
         #print((e-s))
-    print(params.getNumPaths(), np.mean(reorderDistance), np.std(reorderDistance))
+    print(params.getNumPaths(), np.mean(reorderDistance), np.std(reorderDistance), np.mean(avgTput))
