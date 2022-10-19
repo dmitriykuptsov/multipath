@@ -1,5 +1,6 @@
 from utils import SimulationParams
 from numpy.random import uniform
+import math
 
 class GenericScheduler():
     def __init__(self, simulationParams = None):
@@ -24,7 +25,7 @@ class WeightedRoundRobinScheduler(GenericScheduler):
                 self.cumulativeBatch.append(int(self.totalBandwidth / path.bandwidth()))
             else:
                 self.cumulativeBatch.append(self.cumulativeBatch[i - 1] + \
-                    int(self.totalBandwidth / path.bandwidth()))
+                    math.ceil(self.totalBandwidth / path.bandwidth()))
             self.batchSize += int(self.totalBandwidth / path.bandwidth())
             i += 1
 
