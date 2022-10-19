@@ -37,7 +37,6 @@ for idx in range(0, simulationParameters.getNumberOfSimulations()):
         avgReorderingDistance = analyzer.computeReorderingDistance()
         #avgPacketsPerPath = analyzer.computeAvgNumberOfPacketsPerPath()
         reorderDistance.append(avgReorderingDistance)
-        reorderDistance.append(0)
         tput = analyzer.computeAverageThroughput()
         avgTput.append(tput)
         e = time()
